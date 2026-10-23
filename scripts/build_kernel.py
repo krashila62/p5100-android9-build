@@ -90,6 +90,8 @@ def main():
                 raise RuntimeError(f"Source mismatch: {name}")
         kernel = build_root / "kernel"
         output = build_root / "kernel-out"
+        # Linux 3.4 requires the O= directory to exist before invoking make.
+        output.mkdir()
         compiler = build_root / "toolchain/bin/arm-linux-androideabi-"
         status["compiler"] = run([str(compiler) + "gcc", "--version"])
         status["host"] = run(["uname", "-a"])
@@ -136,3 +138,4 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
