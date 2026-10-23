@@ -1,0 +1,13 @@
+{
+  "kernel": {
+    "url": "https://github.com/MightyM17/android_kernel_ti_omap4.git",
+    "commit": "4f4a4b2427c5b09ec0442c0578957322ff4c7ca6"
+  },
+  "toolchain": {
+    "url": "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9",
+    "commit": "cb7b3ac1b7fdb49474ff68761909934d1142f594"
+  },
+  "defconfig": "espresso_defconfig",
+  "rom_sha256": "9a306cc3377e809816046fa7de17b3804f5cfe1d630e0632eca042a4a6dd3eb7",
+  "purpose": "Unmodified kernel build baseline. Not a sleep fix or flashable package."
+}
