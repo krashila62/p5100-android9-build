@@ -1,0 +1,8 @@
+{
+  global:
+    autosuspend_enable;
+    autosuspend_disable;
+    autosuspend_force_suspend;
+    autosuspend_set_wakeup_callback;
+  local: *;
+};

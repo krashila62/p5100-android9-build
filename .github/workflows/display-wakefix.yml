@@ -1,0 +1,43 @@
+name: GT-P5100 display WAKEFIX1 build and tests
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['display-fix/**', '.github/workflows/display-wakefix.yml']
+permissions:
+  contents: read
+jobs:
+  build:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-22.04
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Prepare source and run synchronization tests
+        run: |
+          python3 display-fix/prepare.py
+          g++ -std=c++17 -pthread -Idisplay-fix -Idisplay-fix/upstream display-fix/test.cpp -o /tmp/wakefix-test
+          /tmp/wakefix-test
+      - name: Build ARMv7 Android 9 library with preinstalled NDK
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p artifacts
+          test -n "${ANDROID_NDK_LATEST_HOME:-}"
+          NDK_BIN="$ANDROID_NDK_LATEST_HOME/toolchains/llvm/prebuilt/linux-x86_64/bin"
+          cp "$ANDROID_NDK_LATEST_HOME/source.properties" artifacts/ndk-source.properties
+          "$NDK_BIN/clang" --version > artifacts/compiler.txt
+          "$NDK_BIN/armv7a-linux-androideabi28-clang" -O2 -fPIC -Idisplay-fix/include -Idisplay-fix/upstream/include -Idisplay-fix/upstream -c display-fix/upstream/autosuspend.c -o /tmp/autosuspend.o
+          "$NDK_BIN/armv7a-linux-androideabi28-clang++" -std=c++17 -O2 -fPIC -Idisplay-fix -Idisplay-fix/upstream -shared -static-libstdc++ -Wl,--no-undefined -Wl,-z,relro,-z,now -Wl,--version-script=display-fix/exports.map -Wl,--exclude-libs,ALL -Wl,-soname,libsuspend.so /tmp/autosuspend.o display-fix/generated/autosuspend_wakeup_count.cpp -llog -o artifacts/libsuspend.so
+          "$NDK_BIN/llvm-readelf" -h -d --dyn-syms artifacts/libsuspend.so > artifacts/elf-report.txt
+          cp display-fix/generated/wakefix1.patch display-fix/generated/source-hashes.json artifacts/
+          printf 'Experimental display wake library. Not a flashable ZIP. Hardware test required.\n' > artifacts/NOT-FLASHABLE.txt
+          cd artifacts
+          sha256sum * > SHA256SUMS
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: p5100-wakefix1-library
+          path: artifacts/
+          retention-days: 3
