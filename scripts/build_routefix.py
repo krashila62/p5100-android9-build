@@ -94,14 +94,14 @@ def main():
         old = "\t\t\t\t.flowi4_oif = nh->nh_oif,\n"
         if before.count(old) != 1:
             raise RuntimeError("Unexpected gateway lookup source")
-        after = before.replace(old, old + "\t\t\t\t.flowi4_iif = LOOPBACK_IFINDEX,\n")
+        after = before.replace(old, old + "\t\t\t\t.flowi4_iif = net->loopback_dev->ifindex,\n")
         source.write_text(after)
         import difflib
         (artifact / "routefix1.patch").write_text("".join(difflib.unified_diff(before.splitlines(True), after.splitlines(True), fromfile="a/net/ipv4/fib_semantics.c", tofile="b/net/ipv4/fib_semantics.c")))
         # Keep the release string required by original PowerVR binary modules.
         # Build user and patch manifest explicitly identify this modified build.
         (kernel / ".scmversion").write_text("-g4f4a4b24\n")
-        status["patch"] = "Set LOOPBACK_IFINDEX for local IPv4 gateway validation"
+        status["patch"] = "Set net->loopback_dev->ifindex for local IPv4 gateway validation"
         output = build_root / "kernel-out"
         # Linux 3.4 requires the O= directory to exist before invoking make.
         output.mkdir()
@@ -158,3 +158,5 @@ def main():
 
 if __name__ == "__main__":
     sys.exit(main())
+
+
