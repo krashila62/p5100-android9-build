@@ -31,6 +31,7 @@ jobs:
           "$NDK_BIN/clang" --version > artifacts/compiler.txt
           "$NDK_BIN/armv7a-linux-androideabi28-clang" -O2 -fPIC -Idisplay-fix/include -Idisplay-fix/upstream/include -Idisplay-fix/upstream -c display-fix/upstream/autosuspend.c -o /tmp/autosuspend.o
           "$NDK_BIN/armv7a-linux-androideabi28-clang++" -std=c++17 -O2 -fPIC -Idisplay-fix -Idisplay-fix/upstream -shared -static-libstdc++ -Wl,--no-undefined -Wl,-z,relro,-z,now -Wl,--version-script=display-fix/exports.map -Wl,--exclude-libs,ALL -Wl,-soname,libsuspend.so /tmp/autosuspend.o display-fix/generated/autosuspend_wakeup_count.cpp -llog -o artifacts/libsuspend.so
+          "$NDK_BIN/armv7a-linux-androideabi28-clang" -O2 -fPIE -pie display-fix/loadcheck.c -ldl -o artifacts/loadcheck
           "$NDK_BIN/llvm-readelf" -h -d --dyn-syms artifacts/libsuspend.so > artifacts/elf-report.txt
           cp display-fix/generated/wakefix1.patch display-fix/generated/source-hashes.json artifacts/
           printf 'Experimental display wake library. Not a flashable ZIP. Hardware test required.\n' > artifacts/NOT-FLASHABLE.txt
