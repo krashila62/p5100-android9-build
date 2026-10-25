@@ -1,0 +1,17 @@
+[
+  {
+    "url": "https://raw.githubusercontent.com/remote-android/redroid-patches/a5c70c0dd89c12b5027c902ab4182f31d38f3bb7/android-9.0.0_r61/system/core/0002-bring-back-fuse.patch",
+    "path": "bring-back-fuse.patch",
+    "sha256": "ca1d4e3eaa5351523577e813e21de6a5bb0d84593f7445f8dc861a12cec3280b"
+  },
+  {
+    "url": "https://android.googlesource.com/platform/external/minijail/+/android-9.0.0_r61/libminijail.h?format=TEXT",
+    "path": "include/libminijail.h",
+    "sha256": "d0182d79801dba9bd8d3382b3cb030f9530f9fdc7e4830648c880f5f9db3cc78"
+  },
+  {
+    "url": "https://android.googlesource.com/platform/external/minijail/+/android-9.0.0_r61/scoped_minijail.h?format=TEXT",
+    "path": "include/scoped_minijail.h",
+    "sha256": "e2e46999dd8fac997dad616dd1abe47fdd08dc2c19c329b36ef0091e7876dc3b"
+  }
+]
