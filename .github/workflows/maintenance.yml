@@ -1,0 +1,22 @@
+name: GT-P5100 maintenance installer checks
+on:
+  push:
+    branches: [main]
+    paths: ['maintenance/**', '.github/workflows/maintenance.yml']
+permissions:
+  contents: read
+jobs:
+  check:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-22.04
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - run: python3 maintenance/test_update2.py
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: maintenance-installer-checks
+          path: test-results.json
+          retention-days: 3
