@@ -1,0 +1,32 @@
+--- a/drivers/video/omap2/omapfb/omapfb-main.c
++++ b/drivers/video/omap2/omapfb/omapfb-main.c
+@@ -36,6 +36,7 @@
+ #include <plat/vrfb.h>
+ 
+ #include "omapfb.h"
++#include "../dss/dss.h"
+ 
+ #define MODULE_NAME     "omapfb"
+ 
+@@ -2518,6 +2519,12 @@
+ 		return -ENODEV;
+ 	}
+ 
++	/* VSYNC ioctls may race display blanking. Keep DISPC powered
++	 * while register/unregister updates its interrupt registers. */
++	r = dispc_runtime_get();
++	if (r)
++		return r;
++
+ 	if (enable)
+ 		r = omap_dispc_register_isr(omapfb_vsync_isr, fbdev,
+ 			masks[ch]);
+@@ -2525,6 +2532,7 @@
+ 		r = omap_dispc_unregister_isr(omapfb_vsync_isr, fbdev,
+ 			masks[ch]);
+ 
++	dispc_runtime_put();
+ 	return r;
+ }
+ 
+
