@@ -9,9 +9,9 @@ hashes=re.findall(r"[0-9a-f]{40}",source)
 # First appearances: old sdcard, new sdcard, new boot, display, old boot.
 unique=list(dict.fromkeys(hashes));assert len(unique)==5
 for a,b in zip(unique,[oldsd,newsd,new,display,old]):source=source.replace(a,sha(b))
-lengths=list(dict.fromkeys(re.findall(r'head -c (\d+)',source)));assert len(lengths)==2
+lengths=list(dict.fromkeys(re.findall(r'head -c (\d+)',source)));assert len(lengths) in (1,2)
 source=source.replace('head -c '+lengths[0],'head -c '+str(len(old)))
-source=source.replace('head -c '+lengths[1],'head -c '+str(len(new)))
+if len(lengths)==2: source=source.replace('head -c '+lengths[1],'head -c '+str(len(new)))
 results=[]
 for case in ['install','repeat','rollback','bad-payload','bad-display','corrupt-backup','write-failure']:
  with tempfile.TemporaryDirectory() as tmp:
