@@ -1,0 +1,13 @@
+{
+  "kernel": {
+    "url": "https://github.com/andi34/android_kernel_ti_omap4.git",
+    "commit": "7f7a916c873d1f2fceac4409cd7417e5f824a9d5"
+  },
+  "toolchain": {
+    "url": "https://android.googlesource.com/platform/prebuilts/gcc/linux-x86/arm/arm-linux-androideabi-4.9",
+    "commit": "cb7b3ac1b7fdb49474ff68761909934d1142f594"
+  },
+  "defconfig": "espresso_defconfig",
+  "rom_sha256": "e4c1217c46fe4b7e50ee81a304c6ca99fedd5ffb7dbbdaba35b32523c0e887ff",
+  "purpose": "Restore pre-regression USB500mA/AC1800mA charger policy. Candidate, not device tested; module CRC compatibility must be checked before packaging."
+}
