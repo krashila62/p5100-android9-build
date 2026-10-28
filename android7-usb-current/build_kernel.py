@@ -99,7 +99,7 @@ def main():
         env = os.environ.copy()
         env.update({"LC_ALL": "C", "TZ": "UTC", "KBUILD_BUILD_USER": "cloud-baseline",
                     "KBUILD_BUILD_HOST": "github-actions", "KBUILD_BUILD_VERSION": "1",
-                    "KBUILD_BUILD_TIMESTAMP": "Thu Oct 29 00:00:00 UTC 2026"})
+                    "KBUILD_BUILD_TIMESTAMP": "Thu Oct 29 00:00:00 UTC 2026", "LOCALVERSION": ""})
         command = ["make", "-C", kernel, f"O={output}", "ARCH=arm", f"CROSS_COMPILE={compiler}"]
         # Restore the immediately preceding USB500/AC1800 charger policy only.
         charger = run(["git", "show", "HEAD^:drivers/power/smb347_charger.c"], cwd=kernel)
