@@ -1,0 +1,37 @@
+name: Android 7 GT-P5100 USB current-limit candidate
+on:
+  pull_request:
+    paths:
+      - 'android7-usb-current/**'
+      - '.github/workflows/android7-usb-current.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: android7-usb-${{ github.ref }}
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.event.repository.private == false
+    runs-on: ubuntu-22.04
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262
+        with:
+          persist-credentials: false
+      - name: Validate exact source pins
+        run: python3 android7-usb-current/build_kernel.py --check
+      - name: Build prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential bc bison flex libssl-dev libelf-dev libtinfo5 zlib1g-dev git ca-certificates
+      - name: Build charger-policy candidate
+        run: python3 android7-usb-current/build_kernel.py
+      - name: Save outputs and diagnostic build log
+        if: always()
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02
+        with:
+          name: android7-usb-current-candidate-${{ github.run_id }}
+          path: artifacts/
+          retention-days: 3
+          if-no-files-found: warn
